@@ -1,0 +1,13 @@
+{
+  "service": {
+    "service_account": "kubernetes",
+    "service_account_secret": "/kubernetes/private-kubernetes"
+  },
+  "kubernetes": {
+    "authorization_mode": "RBAC",
+    "high_availability": true,
+    "enable_insecure_port": false,
+    "node_count": 3,
+    "public_node_count": 1
+  }
+}

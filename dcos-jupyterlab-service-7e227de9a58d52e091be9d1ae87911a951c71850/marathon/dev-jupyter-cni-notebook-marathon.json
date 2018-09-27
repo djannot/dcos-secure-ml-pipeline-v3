@@ -1,0 +1,207 @@
+{
+  "id": "/dev/jupyter/cni-notebook",
+  "instances": 1,
+  "cpus": 2,
+  "mem": 8192,
+  "user": "nobody",
+  "cmd": "/usr/local/bin/start.sh ${CONDA_DIR}/bin/jupyter lab --notebook-dir=\"${MESOS_SANDBOX}\"",
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "dcoslabs/dcos-jupyter:latest",
+      "forcePullImage": true
+    },
+    "portMappings": [
+      {
+        "containerPort": 8080,
+        "protocol": "tcp",
+        "name": "notebook",
+        "labels": {
+          "VIP_0": "/dev/jupyter/cni-notebook:8888"
+        }
+      },
+      {
+        "containerPort": 7077,
+        "protocol": "tcp",
+        "name": "sparkdriver",
+        "labels": {
+          "VIP_1": "/dev/jupyter/cni-notebook:7077"
+        }
+      },
+      {
+        "containerPort": 4040,
+        "protocol": "tcp",
+        "name": "sparkui",
+        "labels": {
+          "VIP_2": "/dev/jupyter/cni-notebook:4040"
+        }
+      },
+      {
+        "containerPort": 6046,
+        "protocol": "tcp",
+        "name": "tfdbg",
+        "labels": {
+          "VIP_3": "/dev/jupyter/cni-notebook:6046"
+        }
+      },
+      {
+        "containerPort": 8786,
+        "protocol": "tcp",
+        "name": "daskscheduler",
+        "labels": {
+          "VIP_4": "/dev/jupyter/cni-notebook:8786"
+        }
+      },
+      {
+        "containerPort": 8787,
+        "protocol": "tcp",
+        "name": "daskboard",
+        "labels": {
+          "VIP_5": "/dev/jupyter/cni-notebook:8787"
+        }
+      },
+      {
+        "containerPort": 6379,
+        "protocol": "tcp",
+        "name": "rayredis",
+        "labels": {
+          "VIP_6": "/dev/jupyter/cni-notebook:6379"
+        }
+      },
+      {
+        "containerPort": 8076,
+        "protocol": "tcp",
+        "name": "rayobjectmanager",
+        "labels": {
+          "VIP_7": "/dev/jupyter/cni-notebook:8076"
+        }
+      },
+      {
+        "containerPort": 18080,
+        "protocol": "tcp",
+        "name": "sparkhistory",
+        "labels": {
+          "VIP_8": "/dev/jupyter/cni-notebook:18080"
+        }
+      }
+    ]
+  },
+  "networks": [
+    {
+      "mode": "container",
+      "name": "dcos"
+    }
+  ],
+  "fetch": [
+    {
+      "uri": "http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/core-site.xml",
+      "executable": false,
+      "extract": false,
+      "cache": false
+    },
+    {
+      "uri": "http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/hdfs-site.xml",
+      "executable": false,
+      "extract": false,
+      "cache": false
+    }
+  ],
+  "secrets": {
+    "serviceCredential": {
+      "source": "dev/jupyter/serviceCredential"
+    }
+  },
+  "env": {
+    "DCOS_SERVICE_ACCOUNT_CREDENTIAL": {
+      "secret": "serviceCredential"
+    },
+    "AWS_REGION": "us-east-1",
+    "CONDA_ENVS_PATH": "/mnt/mesos/sandbox/conda/envs:/opt/conda/envs",
+    "CONDA_PKGS_DIRS": "/mnt/mesos/sandbox/conda/pkgs:/opt/conda/pkgs",
+    "DCOS_DIRECTORY": "/mnt/mesos/sandbox/.dcos",
+    "ENABLE_SPARK_MONITOR": "true",
+    "HADOOP_CONF_DIR": "/mnt/mesos/sandbox",
+    "HOME": "/mnt/mesos/sandbox",
+    "JAVA_OPTS": "'-server -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/mnt/mesos/sandbox'",
+    "JUPYTER_CONFIG_DIR": "/mnt/mesos/sandbox/.jupyter",
+    "JUPYTER_RUNTIME_DIR": "/mnt/mesos/sandbox/.local/share/jupyter/runtime",
+    "NGINX_LOG_LEVEL": "warn",
+    "OIDC_DISCOVERY_URI": "https://keycloak.example.com/auth/realms/notebook/.well-known/openid-configuration",
+    "OIDC_REDIRECT_URI": "/dev/jupyter/cni-notebook/redirect_uri",
+    "OIDC_CLIENT_ID": "notebook",
+    "OIDC_CLIENT_SECRET": "6a774856-7ea7-4194-8ad8-d6229710998f",
+    "OIDC_TLS_VERIFY": "no",
+    "OIDC_EMAIL": "vishnu2kmohan@yahoo.com",
+    "OIDC_LOGOUT_PATH": "/dev/jupyter/cni-notebook/logmeout",
+    "OIDC_POST_LOGOUT_REDIRECT_URI": "https://vhost.example.com/dev/jupyter/cni-notebook",
+    "OIDC_USE_SPARTAN_RESOLVER": "true",
+    "USER": "nobody",
+    "START_DASK_DISTRIBUTED": "true",
+    "START_SPARK_HISTORY": "true",
+    "START_TENSORBOARD": "true",
+    "START_RAY_HEAD_NODE": "true",
+    "S3_ENDPOINT": "s3.us-east-1.amazonaws.com",
+    "S3_USE_HTTPS": "1",
+    "S3_VERIFY_SSL": "1",
+    "SPARK_MASTER_URL": "mesos://zk://zk-1.zk:2181,zk-2.zk:2181,zk-3.zk:2181,zk-4.zk:2181,zk-5.zk:2181/mesos",
+    "SPARK_USER": "nobody",
+    "SPARK_DRIVER_CORES": "2",
+    "SPARK_DRIVER_MEMORY": "4g",
+    "SPARK_DRIVER_JAVA_OPTIONS": "'-server -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/mnt/mesos/sandbox'",
+    "SPARK_HISTORY_FS_LOGDIRECTORY": "hdfs://hdfs/history",
+    "SPARK_CONF_SPARK_SCHEDULER_MINREGISTEREDRESOURCESRATIO": "spark.scheduler.minRegisteredResourcesRatio=1.0",
+    "SPARK_CONF_SPARK_SCHEDULER_MAXREGISTEREDRESOURCESWAITINGTIME": "spark.scheduler.maxRegisteredResourcesWaitingTime=300s",
+    "SPARK_CONF_CORES_MAX": "spark.cores.max=5",
+    "SPARK_CONF_EXECUTOR_CORES": "spark.executor.cores=1",
+    "SPARK_CONF_EXECUTOR_MEMORY": "spark.executor.memory=6g",
+    "SPARK_CONF_EXECUTOR_JAVA_OPTIONS": "spark.executor.extraJavaOptions='-server -XX:+UseG1GC -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/mnt/mesos/sandbox'",
+    "SPARK_CONF_EVENTLOG_ENABLED": "spark.eventLog.enabled=true",
+    "SPARK_CONF_EVENTLOG_DIR": "spark.eventLog.dir=hdfs://hdfs/history",
+    "SPARK_CONF_HADOOP_FS_S3A_AWS_CREDENTIALS_PROVIDER": "spark.hadoop.fs.s3a.aws.credentials.provider=com.amazonaws.auth.InstanceProfileCredentialsProvider",
+    "SPARK_CONF_MESOS_EXECUTOR_DOCKER_IMAGE": "spark.mesos.executor.docker.image=dcoslabs/dcos-spark:latest",
+    "SPARK_CONF_SPARK_MESOS_EXECUTOR_DOCKER_FORCEPULLIMAGE": "spark.mesos.executor.docker.forcePullImage=true",
+    "SPARK_CONF_MESOS_EXECUTOR_HOME": "spark.mesos.executor.home=/opt/spark",
+    "SPARK_CONF_MESOS_CONTAINERIZER": "spark.mesos.containerizer=mesos",
+    "SPARK_CONF_MESOS_PRINCIPAL": "spark.mesos.principal=dev_jupyter",
+    "SPARK_CONF_MESOS_ROLE": "spark.mesos.role=dev-jupyter",
+    "SPARK_CONF_MESOS_DRIVER_LABELS": "spark.mesos.driver.labels=DCOS_SPACE:/dev/jupyter",
+    "SPARK_CONF_MESOS_TASK_LABELS": "spark.mesos.task.labels=DCOS_SPACE:/dev/jupyter",
+    "SPARK_CONF_SPARK_MESOS_DRIVERENV_SPARK_MESOS_KRB5_CONF_BASE64": "spark.mesos.driverEnv.SPARK_MESOS_KRB5_CONF_BASE64=W2xpYmRlZmF1bHRzXQoJZGVmYXVsdF9yZWFsbSA9IEFUSEVOQS5NSVQuRURVCgpbcmVhbG1zXQojIHVzZSAia2RjID0gLi4uIiBpZiByZWFsbSBhZG1pbnMgaGF2ZW4ndCBwdXQgU1JWIHJlY29yZHMgaW50byBETlMKCUFUSEVOQS5NSVQuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtlcmJlcm9zLm1pdC5lZHUKCX0KCUFORFJFVy5DTVUuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtkYy0wMS5hbmRyZXcuY211LmVkdQoJfQoKW2RvbWFpbl9yZWFsbV0KCW1pdC5lZHUgPSBBVEhFTkEuTUlULkVEVQoJY3NhaWwubWl0LmVkdSA9IENTQUlMLk1JVC5FRFUKCS51Y3NjLmVkdSA9IENBVFMuVUNTQy5FRFUKCltsb2dnaW5nXQojCWtkYyA9IENPTlNPTEUK",
+    "SPARK_CONF_SPARK_EXECUTORENV_SPARK_MESOS_KRB5_CONF_BASE64": "spark.executorEnv.SPARK_MESOS_KRB5_CONF_BASE64=W2xpYmRlZmF1bHRzXQoJZGVmYXVsdF9yZWFsbSA9IEFUSEVOQS5NSVQuRURVCgpbcmVhbG1zXQojIHVzZSAia2RjID0gLi4uIiBpZiByZWFsbSBhZG1pbnMgaGF2ZW4ndCBwdXQgU1JWIHJlY29yZHMgaW50byBETlMKCUFUSEVOQS5NSVQuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtlcmJlcm9zLm1pdC5lZHUKCX0KCUFORFJFVy5DTVUuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtkYy0wMS5hbmRyZXcuY211LmVkdQoJfQoKW2RvbWFpbl9yZWFsbV0KCW1pdC5lZHUgPSBBVEhFTkEuTUlULkVEVQoJY3NhaWwubWl0LmVkdSA9IENTQUlMLk1JVC5FRFUKCS51Y3NjLmVkdSA9IENBVFMuVUNTQy5FRFUKCltsb2dnaW5nXQojCWtkYyA9IENPTlNPTEUK",
+    "SPARK_CONF_SPARK_EXECUTORENV_KRB5_CONFIG": "spark.executorEnv.KRB5_CONFIG=/mnt/mesos/sandbox/krb5.conf",
+    "SPARK_CONF_SPARK_EXECUTORENV_JAVA_HOME": "spark.executorEnv.JAVA_HOME=/opt/jdk",
+    "SPARK_CONF_SPARK_EXECUTORENV_HADOOP_HDFS_HOME": "spark.executorEnv.HADOOP_HDFS_HOME=/opt/hadoop",
+    "SPARK_CONF_SPARK_MESOS_URIS": "spark.mesos.uris=http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/hdfs-site.xml,http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/core-site.xml",
+    "SPARK_CONF_SPARK_EXECUTORENV_HADOOP_OPTS": "spark.executorEnv.HADOOP_OPTS='-Djava.library.path=/opt/hadoop/lib/native -Djava.security.krb5.conf=/mnt/mesos/sandbox/krb5.conf'",
+    "SPARK_MESOS_KRB5_CONF_BASE64": "W2xpYmRlZmF1bHRzXQoJZGVmYXVsdF9yZWFsbSA9IEFUSEVOQS5NSVQuRURVCgpbcmVhbG1zXQojIHVzZSAia2RjID0gLi4uIiBpZiByZWFsbSBhZG1pbnMgaGF2ZW4ndCBwdXQgU1JWIHJlY29yZHMgaW50byBETlMKCUFUSEVOQS5NSVQuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtlcmJlcm9zLm1pdC5lZHUKCX0KCUFORFJFVy5DTVUuRURVID0gewoJCWFkbWluX3NlcnZlciA9IGtkYy0wMS5hbmRyZXcuY211LmVkdQoJfQoKW2RvbWFpbl9yZWFsbV0KCW1pdC5lZHUgPSBBVEhFTkEuTUlULkVEVQoJY3NhaWwubWl0LmVkdSA9IENTQUlMLk1JVC5FRFUKCS51Y3NjLmVkdSA9IENBVFMuVUNTQy5FRFUKCltsb2dnaW5nXQojCWtkYyA9IENPTlNPTEUK",
+    "TENSORBOARD_LOGDIR": "hdfs://hdfs/",
+    "TERM": "xterm-256color"
+  },
+  "labels": {
+    "MARATHON_SINGLE_INSTANCE_APP": "true",
+    "HAPROXY_GROUP": "external",
+    "HAPROXY_0_ENABLED": "true",
+    "HAPROXY_0_REDIRECT_TO_HTTPS": "true",
+    "HAPROXY_0_VHOST": "vhost.example.com",
+    "HAPROXY_0_PATH": "/dev/jupyter/cni-notebook"
+  },
+  "healthChecks": [
+    {
+      "portIndex": 0,
+      "protocol": "MESOS_HTTP",
+      "path": "/healthz",
+      "gracePeriodSeconds": 30,
+      "intervalSeconds": 20,
+      "timeoutSeconds": 10,
+      "maxConsecutiveFailures": 3
+    }
+  ],
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0,
+    "maximumOverCapacity": 0
+  },
+  "unreachableStrategy": {
+    "expungeAfterSeconds": 0,
+    "inactiveAfterSeconds": 0
+  }
+}

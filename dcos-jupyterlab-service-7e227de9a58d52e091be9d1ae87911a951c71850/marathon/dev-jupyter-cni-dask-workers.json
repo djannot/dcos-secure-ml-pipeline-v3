@@ -1,0 +1,100 @@
+{
+  "id": "/dev/jupyter/cni-dask-workers",
+  "instances": 2,
+  "cpus": 2,
+  "mem": 6144,
+  "user": "nobody",
+  "cmd": "/usr/local/bin/start-dask-worker.sh",
+  "container": {
+    "type": "MESOS",
+    "docker": {
+      "image": "dcoslabs/dcos-ml-worker:latest",
+      "forcePullImage": true
+    },
+    "portMappings": [
+      {
+        "containerPort": 8786,
+        "protocol": "tcp",
+        "name": "daskworker",
+        "labels": {
+          "VIP_0": "/dev/jupyter/cni-dask-workers:8786"
+        }
+      },
+      {
+        "containerPort": 8787,
+        "protocol": "tcp",
+        "name": "daskbokeh",
+        "labels": {
+          "VIP_1": "/dev/jupyter/cni-dask-workers:8787"
+        }
+      },
+      {
+        "containerPort": 8788,
+        "protocol": "tcp",
+        "name": "dasknanny",
+        "labels": {
+          "VIP_2": "/dev/jupyter/cni-dask-workers:8788"
+        }
+      }
+    ]
+  },
+  "networks": [
+    {
+      "mode": "container",
+      "name": "dcos"
+    }
+  ],
+  "fetch": [
+    {
+      "uri": "http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/core-site.xml",
+      "executable": false,
+      "extract": false,
+      "cache": false
+    },
+    {
+      "uri": "http://api.devhdfs.marathon.l4lb.thisdcos.directory/v1/endpoints/hdfs-site.xml",
+      "executable": false,
+      "extract": false,
+      "cache": false
+    }
+  ],
+  "secrets": {
+    "serviceCredential": {
+      "source": "dev/jupyter/serviceCredential"
+    }
+  },
+  "env": {
+    "DCOS_SERVICE_ACCOUNT_CREDENTIAL": {
+      "secret": "serviceCredential"
+    },
+    "CONDA_ENVS_PATH": "/mnt/mesos/sandbox/conda/envs:/opt/conda/envs",
+    "CONDA_PKGS_DIRS": "/mnt/mesos/sandbox/conda/pkgs:/opt/conda/pkgs",
+    "HADOOP_CONF_DIR": "/mnt/mesos/sandbox",
+    "HOME": "/mnt/mesos/sandbox",
+    "JUPYTER_CONFIG_DIR": "/mnt/mesos/sandbox/.jupyter",
+    "JUPYTER_RUNTIME_DIR": "/mnt/mesos/sandbox/.local/share/jupyter/runtime",
+    "USER": "nobody",
+    "DASK_SCHEDULER_APP": "cni-notebook",
+    "TERM": "xterm-256color"
+  },
+  "healthChecks": [
+    {
+      "protocol": "COMMAND",
+      "command": {
+        "value": "/opt/conda/bin/curl -fsSL -X GET \"http://$(hostname -i):${PORT_DASKBOKEH}\" > /dev/null 2>&1"
+      },
+      "gracePeriodSeconds": 60,
+      "intervalSeconds": 20,
+      "timeoutSeconds": 10,
+      "maxConsecutiveFailures": 3
+    }
+  ],
+  "upgradeStrategy": {
+    "minimumHealthCapacity": 0.5,
+    "maximumOverCapacity": 0.5
+  },
+  "unreachableStrategy": {
+    "expungeAfterSeconds": 0,
+    "inactiveAfterSeconds": 0
+  }
+}
