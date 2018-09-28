@@ -41,49 +41,49 @@ Run the following command to launch NiFi in your web browser:
 
 Login with `NiFiadmin@MESOS.LAB` using the password `password`.
 
-![NiFi](images/NiFi.png)
+![NiFi](images/nifi.png)
 
 Right click on the background.
 
-![NiFi-templates](images/NiFi-templates.png)
+![NiFi-templates](images/nifi-templates.png)
 
 Select `Upload template` and upload the `Flickr.xml` template.
 
-![NiFi-upload-template-flickr](images/NiFi-upload-template-flickr.png)
+![NiFi-upload-template-flickr](images/nifi-upload-template-flickr.png)
 
 Drag and drop the template icon and select the `Flickr.xml` template.
 
-![NiFi-add-template-flickr](images/NiFi-add-template-flickr.png)
+![NiFi-add-template-flickr](images/nifi-add-template-flickr.png)
 
 As you can see, there are few warnings. They are corresponding to the sensitive information that can't be stored in a template.
 
-![NiFi-template-flickr](images/NiFi-template-flickr.png)
+![NiFi-template-flickr](images/nifi-template-flickr.png)
 
 Double click on the `Get Recent Flickr Pictures` group.
 
-![NiFi-get-recent-flickr-pictures](images/NiFi-get-recent-flickr-pictures.png)
+![NiFi-get-recent-flickr-pictures](images/nifi-get-recent-flickr-pictures.png)
 
 Double click on the first `InvokeHTTP` processor.
 
-![NiFi-invoke-http](images/NiFi-invoke-http.png)
+![NiFi-invoke-http](images/nifi-invoke-http.png)
 
 Then, click on the arrow in the `SSL Context Service` row.
 
-![NiFi-invoke-http-ssl](images/NiFi-invoke-http-ssl.png)
+![NiFi-invoke-http-ssl](images/nifi-invoke-http-ssl.png)
 
 Click on the `Configure` icon.
 
-![NiFi-invoke-http-ssl-password](images/NiFi-invoke-http-ssl-password.png)
+![NiFi-invoke-http-ssl-password](images/nifi-invoke-http-ssl-password.png)
 
 Indicate `changeit` for the truststore password.
 
-![NiFi-invoke-http-ssl-enable](images/NiFi-invoke-http-ssl-enable.png)
+![NiFi-invoke-http-ssl-enable](images/nifi-invoke-http-ssl-enable.png)
 
 Click on the `Enable` icon and enable it.
 
 Double click on the first `GenerateFlowFile` processor.
 
-![NiFi-cat](images/NiFi-cat.png)
+![NiFi-cat](images/nifi-cat.png)
 
 Specify `cats` for the value of the `tags` parameter.
 
